@@ -1,0 +1,149 @@
+# 示例分镜脚本 - 万里书院产品演示
+project:
+  name: "万里书院产品演示"
+  resolution: [1440, 900]
+  fps: 30
+  voice: "zh-CN-XiaoxiaoNeural"
+  bitrate: "8000k"
+
+scenes:
+  - id: "01_homepage"
+    url: "http://81.70.220.120/"
+    narration: "欢迎来到万里书院，我们专注于AI智能作文批改，为教育机构提供专业高效的批改解决方案。"
+    actions:
+      - type: scroll
+        y: 0
+
+  - id: "02_features"
+    narration: "系统提供六大核心功能：OCR智能识别、AI智能批改、多维度分析、个性化AI导师、批量处理、数据统计。"
+    actions:
+      - type: scroll
+        y: 720
+        smooth: true
+
+  - id: "03_tutors"
+    narration: "我们拥有多位AI导师，李雅文老师专注中高考评分标准，王明远老师擅长启发式教学，为学生提供个性化批改体验。"
+    actions:
+      - type: scroll
+        y: 1550
+        smooth: true
+
+  - id: "04_demo"
+    narration: "这是一份真实的批改报告样例，让我们滚动查看完整内容，包括导师寄语、原文批注、升格范文等核心功能。"
+    actions:
+      - type: scroll
+        y: 2930
+        smooth: true
+      - type: scroll_iframe
+        positions: [300, 600, 900, 1200, 1500]
+        interval: 1.5
+
+  - id: "05_how_it_works"
+    narration: "使用流程非常简单：上传作文、AI智能批改、获取详细报告，三步即可完成。"
+    actions:
+      - type: scroll
+        y: 4280
+        smooth: true
+
+  - id: "06_pricing"
+    narration: "相比人工批改每篇20到100元的成本，AI批改每篇只需2元起，为机构节省超过90%的批改成本。"
+    actions:
+      - type: scroll
+        y: 4890
+        smooth: true
+
+  - id: "07_contact"
+    narration: "我们提供专业的技术支持和售后服务，欢迎通过邮箱或电话联系我们咨询。"
+    actions:
+      - type: scroll
+        y: 6150
+        smooth: true
+
+  - id: "08_report_header"
+    url: "http://81.70.220.120/grading/report/501"
+    narration: "现在展示一份真实的批改报告。这是钱梓豪同学的作文《有你真好》，AI导师王明远老师给他写了一封专属的点评信。"
+    actions:
+      - type: scroll
+        y: 0
+
+  - id: "09_report_summary"
+    narration: "导师总评部分详细分析了文章的优点和提升方向，帮助学生明确改进目标。"
+    actions:
+      - type: scroll_to_text
+        text: "导师总评"
+        offset: 100
+
+  - id: "10_report_annotation"
+    narration: "原文批注功能直接在作文上标记错别字、病句和精彩表达，每处批注都有详细的修改建议。"
+    actions:
+      - type: scroll_to_text
+        text: "原文批注"
+        offset: 50
+
+  - id: "11_report_rating"
+    narration: "综合评级按照中考高考评分标准，从多个维度给出客观评分，本文获得24分，属于二类文。"
+    actions:
+      - type: scroll_to_text
+        text: "综合评级"
+        offset: 100
+
+  - id: "12_report_upgrade"
+    narration: "升格范文是我们的特色功能，AI导师在保留原文风格的基础上，修正错误、优化表达，让学生直观看到好作文应该是什么样子。"
+    actions:
+      - type: scroll_to_text
+        text: "升格范文"
+        offset: 100
+
+  - id: "13_report_advice"
+    narration: "最后是老师的寄语，包含写作技巧指导和举一反三的思考题，帮助学生触类旁通。"
+    actions:
+      - type: scroll_to_text
+        text: "老师的寄语"
+        offset: 100
+
+  - id: "14_home_modes"
+    url: "http://81.70.220.120/home"
+    narration: "后台首页提供三种批改模式：自由批改适合零散作文，命题单个适合单篇精批，命题批量适合整班作业。"
+    actions:
+      - type: scroll
+        y: 0
+
+  - id: "15_free_upload"
+    narration: "自由批改模式下，直接上传作文照片，系统自动识别标题和内容，还可以选择不同的AI导师。"
+    actions:
+      - type: click
+        text: "自由批改"
+      - type: wait
+        duration: 1
+      - type: scroll
+        y: 200
+        smooth: true
+
+  - id: "16_batch_topic"
+    url: "http://81.70.220.120/upload/batch"
+    narration: "命题批量批改是机构最常用的功能，左侧选择预设题目，右侧可以批量上传整个班级的作文照片。"
+    actions:
+      - type: wait
+        duration: 1
+
+  - id: "17_batch_upload"
+    narration: "支持拖拽上传或点击选择文件，一次可上传多张作文照片，系统自动创建批次进行批改。"
+    actions:
+      - type: click
+        text: "有你真好"
+      - type: wait
+        duration: 1
+
+  - id: "18_grading_list"
+    url: "http://81.70.220.120/grading"
+    narration: "批改列表支持按状态筛选，方便教师追踪每次作业的批改进度和完成情况。"
+    actions:
+      - type: scroll
+        y: 0
+
+  - id: "19_ending"
+    url: "http://81.70.220.120/"
+    narration: "万里书院智能作文批改系统，让每一篇作文都能得到专业细致的批改。欢迎联系我们获取试用账号！"
+    actions:
+      - type: scroll
+        y: 0

@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./output:/app/output
+    environment:
+      - TTS_VOICE=zh-CN-XiaoxiaoNeural
+      - VIDEO_RESOLUTION=1440x900
+      - VIDEO_FPS=30
+      - VIDEO_BITRATE=8000k
+    restart: unless-stopped
+
+  # Optional: Redis for task queue (production)
+  # redis:
+  #   image: redis:7-alpine
+  #   ports:
+  #     - "6379:6379"
+  #   volumes:
+  #     - redis_data:/data
+
+# volumes:
+#   redis_data:
