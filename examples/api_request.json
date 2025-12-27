@@ -1,0 +1,47 @@
+{
+  "script": {
+    "project": {
+      "name": "Quick Demo",
+      "resolution": [1440, 900],
+      "fps": 30,
+      "voice": "en-US-JennyNeural",
+      "bitrate": "8000k"
+    },
+    "scenes": [
+      {
+        "id": "intro",
+        "url": "https://example.com",
+        "narration": "Welcome to our product demonstration.",
+        "actions": [
+          {
+            "type": "scroll",
+            "y": 0
+          },
+          {
+            "type": "wait",
+            "duration": 2
+          }
+        ]
+      },
+      {
+        "id": "features",
+        "narration": "Here are our main features.",
+        "actions": [
+          {
+            "type": "scroll",
+            "y": 500,
+            "smooth": true
+          },
+          {
+            "type": "wait",
+            "duration": 2
+          }
+        ]
+      }
+    ]
+  },
+  "options": {
+    "format": "mp4",
+    "quality": "high"
+  }
+}

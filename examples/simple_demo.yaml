@@ -1,0 +1,43 @@
+# Simple Product Demo Example
+project:
+  name: "Product Demo"
+  resolution: [1920, 1080]
+  fps: 30
+  voice: "en-US-JennyNeural"
+  bitrate: "8000k"
+
+scenes:
+  - id: "homepage"
+    url: "https://example.com"
+    narration: "Welcome to our amazing product. Let's explore the key features."
+    actions:
+      - type: scroll
+        y: 0
+      - type: wait
+        duration: 2
+
+  - id: "features"
+    narration: "Here are the three main features that make our product stand out."
+    actions:
+      - type: scroll
+        y: 600
+        smooth: true
+      - type: wait
+        duration: 3
+
+  - id: "demo"
+    narration: "Now, let's see it in action with a quick demonstration."
+    actions:
+      - type: click
+        text: "Get Started"
+      - type: wait
+        duration: 2
+
+  - id: "conclusion"
+    narration: "Thank you for watching. Try it yourself today!"
+    actions:
+      - type: scroll
+        y: 0
+        smooth: true
+      - type: wait
+        duration: 2
