@@ -167,6 +167,28 @@ API_PORT=8000
 - **FastAPI** - API 服务框架
 - **Celery** - 异步任务队列
 
-## 📄 License
+## 🎯 使用场景
 
-MIT License
+- **产品演示** - 快速制作产品功能演示视频
+- **功能发布** - 自动生成新功能介绍视频
+- **教程制作** - 批量生成教程视频
+- **营销内容** - 规模化生成营销视频
+- **变更日志** - 为每个版本生成演示视频
+
+## 🤝 贡献
+
+欢迎贡献！请查看 [CONTRIBUTING.md](CONTRIBUTING.md) 了解如何参与。
+
+## 📄 许可证
+
+MIT License - 详见 [LICENSE](LICENSE) 文件
+
+## 🔗 相关链接
+
+- [文档](docs/)
+- [示例脚本](examples/)
+- [问题反馈](https://github.com/your-org/demo-video-generator/issues)
+
+---
+
+Made with ❤️ by the Demo Video Generator team
