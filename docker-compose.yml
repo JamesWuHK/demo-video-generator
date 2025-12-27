@@ -12,6 +12,11 @@ services:
       - VIDEO_RESOLUTION=1440x900
       - VIDEO_FPS=30
       - VIDEO_BITRATE=8000k
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
+      - MINIMAX_API_KEY=${MINIMAX_API_KEY}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
     restart: unless-stopped
 
   # Optional: Redis for task queue (production)
