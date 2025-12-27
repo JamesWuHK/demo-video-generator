@@ -2,6 +2,7 @@
 
 from fastapi import FastAPI, BackgroundTasks, HTTPException
 from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
 from pathlib import Path
@@ -12,6 +13,15 @@ app = FastAPI(
     title="Demo Video Generator API",
     description="AI-powered product demo video generator",
     version="0.1.0",
+)
+
+# Add CORS middleware for web frontend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Configure appropriately for production
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # In-memory task storage (use Redis in production)
@@ -118,27 +128,27 @@ async def process_video_task(task_id: str, script_data: dict):
     from ..core.tts import TTSEngine
     from ..core.recorder import VideoRecorder
     from ..core.merger import VideoMerger
-    
+
     try:
         tasks[task_id]["status"] = "processing"
         tasks[task_id]["message"] = "Parsing script..."
-        
+
         # Parse script
         script = Script.from_dict(script_data)
-        
+
         # Setup paths
         output_dir = Path(f"./output/{task_id}")
         output_dir.mkdir(parents=True, exist_ok=True)
         audio_dir = output_dir / "audio"
         audio_dir.mkdir(exist_ok=True)
-        
+
         # Generate audio
         tasks[task_id]["message"] = "Generating audio..."
         tasks[task_id]["progress"] = 0.1
-        
+
         tts = TTSEngine(voice=script.project.voice)
         scene_durations = {}
-        
+
         for i, scene in enumerate(script.scenes):
             if scene.narration:
                 audio_path = audio_dir / f"{scene.id}.mp3"
@@ -146,35 +156,35 @@ async def process_video_task(task_id: str, script_data: dict):
                 scene_durations[scene.id] = duration
             else:
                 scene_durations[scene.id] = scene.duration or 3.0
-            
+
             tasks[task_id]["progress"] = 0.1 + (0.3 * (i + 1) / len(script.scenes))
-        
+
         # Record video
         tasks[task_id]["message"] = "Recording video..."
         tasks[task_id]["progress"] = 0.4
-        
+
         recorder = VideoRecorder(
             output_dir=output_dir,
             resolution=tuple(script.project.resolution),
             headless=True,
         )
-        
+
         result = recorder.record(
             scenes=script.scenes,
             scene_durations=scene_durations,
         )
-        
+
         tasks[task_id]["progress"] = 0.7
-        
+
         # Merge video and audio
         tasks[task_id]["message"] = "Merging video and audio..."
-        
+
         output_path = output_dir / "output.mp4"
         merger = VideoMerger(
             fps=script.project.fps,
             bitrate=script.project.bitrate,
         )
-        
+
         merger.merge(
             video_path=result.video_path,
             audio_dir=audio_dir,
@@ -182,27 +192,111 @@ async def process_video_task(task_id: str, script_data: dict):
             output_path=output_path,
             trim_start=result.login_duration,
         )
-        
+
         tasks[task_id]["progress"] = 0.9
-        
+
         # Generate subtitles
         tasks[task_id]["message"] = "Generating subtitles..."
         narrations = {s.id: s.narration for s in script.scenes if s.narration}
         srt_path = output_path.with_suffix(".srt")
         merger.generate_srt(result.timestamps, narrations, srt_path)
-        
+
         # Done
         tasks[task_id]["status"] = "completed"
         tasks[task_id]["progress"] = 1.0
         tasks[task_id]["message"] = "Video generation completed"
         tasks[task_id]["output_path"] = str(output_path)
-        
+
     except Exception as e:
         tasks[task_id]["status"] = "failed"
         tasks[task_id]["error"] = str(e)
         tasks[task_id]["message"] = f"Error: {str(e)}"
 
 
+# New AI Script Generation Endpoints
+
+class AIGenerateRequest(BaseModel):
+    """Request for AI script generation."""
+    url: str
+    video_length: int = 60
+    style: str = "professional"  # professional, casual, energetic
+    language: str = "zh-CN"
+    focus_areas: list[str] = []
+
+
+class AIGenerateResponse(BaseModel):
+    """Response from AI script generation."""
+    script: dict
+    analysis: dict
+
+
+@app.post("/api/v1/ai/generate-script", response_model=AIGenerateResponse)
+async def ai_generate_script(request: AIGenerateRequest):
+    """Generate demo video script using AI.
+
+    Analyzes the website and automatically creates a complete script.
+    """
+    from ..core.ai_generator import generate_demo_script
+
+    try:
+        # Generate script using AI
+        script = await generate_demo_script(
+            url=request.url,
+            video_length=request.video_length,
+            style=request.style,
+            language=request.language,
+            focus_areas=request.focus_areas
+        )
+
+        return AIGenerateResponse(
+            script=script,
+            analysis={"url": request.url}  # Could include more analysis details
+        )
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to generate script: {str(e)}")
+
+
+@app.post("/api/v1/ai/generate-video")
+async def ai_generate_video(request: AIGenerateRequest, background_tasks: BackgroundTasks):
+    """AI-powered one-click video generation.
+
+    Analyzes website, generates script, and creates video in one step.
+    """
+    from ..core.ai_generator import generate_demo_script
+
+    try:
+        # Generate script
+        script_data = await generate_demo_script(
+            url=request.url,
+            video_length=request.video_length,
+            style=request.style,
+            language=request.language,
+            focus_areas=request.focus_areas
+        )
+
+        # Create video generation task
+        task_id = str(uuid.uuid4())
+
+        tasks[task_id] = {
+            "status": "pending",
+            "progress": 0.0,
+            "message": "AI script generated, starting video creation...",
+            "output_path": None,
+            "error": None,
+            "script": script_data,  # Include generated script in response
+        }
+
+        # Add to background tasks
+        background_tasks.add_task(process_video_task, task_id, script_data)
+
+        return TaskStatus(task_id=task_id, **tasks[task_id])
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to generate video: {str(e)}")
+
+
 def create_app():
     """Create FastAPI application."""
     return app
+
